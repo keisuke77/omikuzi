@@ -9,22 +9,23 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             background-color: #f0f0f0;
             overflow: hidden;
         }
         .container {
             margin-top: 50px;
             position: relative;
+            padding: 0 20px;
         }
         h1 {
-            font-size: 3em;
+            font-size: 2em;
             color: #ff5733;
             text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
         .result {
             margin: 20px 0;
-            font-size: 2em;
+            font-size: 1.5em;
             font-weight: bold;
             color: #333;
             opacity: 0;
@@ -32,7 +33,7 @@
         }
         .btn {
             padding: 15px 30px;
-            font-size: 1.2em;
+            font-size: 1em;
             background-color: #007BFF;
             color: white;
             border: none;
@@ -66,14 +67,14 @@
         }
         .fortune-details {
             margin-top: 20px;
-            font-size: 1.2em;
+            font-size: 1em;
             color: #666;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
         .animation-box {
-            width: 150px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             margin: 20px auto;
             background-color: #f5f5f5;
             border: 2px solid #ddd;
@@ -116,7 +117,7 @@
     <div class="container">
         <h1>よぴおかのおみくじ</h1>
         <p>運勢を占ってみましょう！</p>
-        <button class="btn" onclick="drawOmikuji()">おみくじを引く</button>
+        <button class="btn" id="omikujiButton" onclick="drawOmikuji()">おみくじを引く</button>
         <div class="animation-box">
             <div class="gacha-ball" id="gachaBall"></div>
         </div>
@@ -130,19 +131,20 @@
             const fortunes = ["大吉", "中吉", "小吉", "吉", "末吉", "凶", "大凶"];
             const categories = ["金運", "恋愛運", "健康運", "仕事運"];
             const details = {
-    "大吉": "今日は極めて良好な運勢です。新しい挑戦が成功しやすい日なので、計画していたプロジェクトや目標に一歩踏み出しましょう。",
-    "中吉": "安定した運勢です。目の前の課題に着実に取り組むことで、着実な成果が得られるでしょう。自己管理を意識してください。",
-    "小吉": "小さな成功が期待できます。人間関係を大切にし、感謝の気持ちを行動で示すことで、良い影響を得られるでしょう。",
-    "吉": "良い兆しが見えていますが、急がず着実に進むことが重要です。計画を再確認し、段階的な進展を目指しましょう。",
-    "末吉": "一見すると厳しい状況に思えるかもしれませんが、課題を克服するための学びが得られる日です。柔軟な対応を心がけてください。",
-    "凶": "注意深い行動が求められる日です。リスクを冷静に分析し、無理を避けることで問題を回避できます。",
-    "大凶": "不安定な運勢が予測されます。特に慎重な判断を心がけ、安全を最優先に行動してください。休息を取り、次の機会に備えましょう。"
-};
+                "大吉": "今日は極めて良好な運勢です。新しい挑戦が成功しやすい日なので、計画していたプロジェクトや目標に一歩踏み出しましょう。",
+                "中吉": "安定した運勢です。目の前の課題に着実に取り組むことで、着実な成果が得られるでしょう。自己管理を意識してください。",
+                "小吉": "小さな成功が期待できます。人間関係を大切にし、感謝の気持ちを行動で示すことで、良い影響を得られるでしょう。",
+                "吉": "良い兆しが見えていますが、急がず着実に進むことが重要です。計画を再確認し、段階的な進展を目指しましょう。",
+                "末吉": "一見すると厳しい状況に思えるかもしれませんが、課題を克服するための学びが得られる日です。柔軟な対応を心がけてください。",
+                "凶": "注意深い行動が求められる日です。リスクを冷静に分析し、無理を避けることで問題を回避できます。",
+                "大凶": "不安定な運勢が予測されます。特に慎重な判断を心がけ、安全を最優先に行動してください。休息を取り、次の機会に備えましょう。"
+            };
             const randomIndex = Math.floor(Math.random() * fortunes.length);
             const gachaBall = document.getElementById("gachaBall");
             const resultElement = document.getElementById("result");
             const fortuneDetailsElement = document.getElementById("fortuneDetails");
             const shareButton = document.getElementById("shareButton");
+            const omikujiButton = document.getElementById("omikujiButton");
 
             // 初期化
             resultElement.style.opacity = "0";
@@ -166,6 +168,9 @@
                     // シェアボタン表示
                     shareButton.style.display = "inline-block";
                     shareButton.onclick = () => shareToTwitter(fortune);
+
+                    // おみくじボタン削除
+                    omikujiButton.remove();
                 }, 1000);
             }, 500);
         }
