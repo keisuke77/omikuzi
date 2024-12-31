@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おみくじ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+        .container {
+            margin-top: 50px;
+            position: relative;
+        }
+        h1 {
+            font-size: 3em;
+            color: #ff5733;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .result {
+            margin: 20px 0;
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+        .sparkles {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: gold;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle-animation 1s linear infinite;
+        }
+        @keyframes sparkle-animation {
+            0% {
+                transform: scale(0.5) translate(-50%, -50%);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5) translate(-50%, -50%);
+                opacity: 0;
+            }
+        }
+        .fortune-details {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #666;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .animation-box {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            background-color: #f5f5f5;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .gacha-ball {
+            width: 30px;
+            height: 30px;
+            background-color: #ffcc00;
+            border: 2px solid #ffaa00;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            top: -30px;
+            transform: translateX(-50%);
+            transition: top 1s ease-in-out;
+        }
+        .gacha-ball.active {
+            top: 50%;
+        }
+        .share-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #1da1f2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .share-button:hover {
+            background-color: #0d95e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>おみくじ</h1>
+        <p>運勢を占ってみましょう！</p>
+        <button class="btn" onclick="drawOmikuji()">おみくじを引く</button>
+        <div class="animation-box">
+            <div class="gacha-ball" id="gachaBall"></div>
+        </div>
+        <div class="result" id="result">結果はここに表示されます</div>
+        <div class="fortune-details" id="fortuneDetails">詳細がここに表示されます</div>
+        <button class="share-button" id="shareButton" style="display: none;">Twitterでシェア</button>
+    </div>
+
+    <script>
+        function drawOmikuji() {
+            const fortunes = ["大吉", "中吉", "小吉", "吉", "末吉", "凶", "大凶"];
+            const categories = ["金運", "恋愛運", "健康運", "仕事運"];
+            const details = {
+    "大吉": "今日は極めて良好な運勢です。新しい挑戦が成功しやすい日なので、計画していたプロジェクトや目標に一歩踏み出しましょう。",
+    "中吉": "安定した運勢です。目の前の課題に着実に取り組むことで、着実な成果が得られるでしょう。自己管理を意識してください。",
+    "小吉": "小さな成功が期待できます。人間関係を大切にし、感謝の気持ちを行動で示すことで、良い影響を得られるでしょう。",
+    "吉": "良い兆しが見えていますが、急がず着実に進むことが重要です。計画を再確認し、段階的な進展を目指しましょう。",
+    "末吉": "一見すると厳しい状況に思えるかもしれませんが、課題を克服するための学びが得られる日です。柔軟な対応を心がけてください。",
+    "凶": "注意深い行動が求められる日です。リスクを冷静に分析し、無理を避けることで問題を回避できます。",
+    "大凶": "不安定な運勢が予測されます。特に慎重な判断を心がけ、安全を最優先に行動してください。休息を取り、次の機会に備えましょう。"
+};
+            const randomIndex = Math.floor(Math.random() * fortunes.length);
+            const gachaBall = document.getElementById("gachaBall");
+            const resultElement = document.getElementById("result");
+            const fortuneDetailsElement = document.getElementById("fortuneDetails");
+            const shareButton = document.getElementById("shareButton");
+
+            // 初期化
+            resultElement.style.opacity = "0";
+            fortuneDetailsElement.style.opacity = "0";
+            shareButton.style.display = "none";
+            gachaBall.classList.remove("active");
+
+            // ガラガラアニメーション
+            setTimeout(() => {
+                gachaBall.classList.add("active");
+
+                setTimeout(() => {
+                    const fortune = fortunes[randomIndex];
+                    const categoryResults = categories.map(category => `${category}: ${fortunes[Math.floor(Math.random() * fortunes.length)]}`).join('\n');
+                    resultElement.textContent = `あなたの運勢は「${fortune}」です！`;
+                    fortuneDetailsElement.textContent = `${details[fortune]}\n\n${categoryResults}`;
+                    resultElement.style.opacity = "1";
+                    fortuneDetailsElement.style.opacity = "1";
+                    createSparkles();
+
+                    // シェアボタン表示
+                    shareButton.style.display = "inline-block";
+                    shareButton.onclick = () => shareToTwitter(fortune);
+                }, 1000);
+            }, 500);
+        }
+
+        function createSparkles() {
+            const container = document.querySelector('.container');
+            for (let i = 0; i < 30; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkles';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                container.appendChild(sparkle);
+
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        }
+
+        function shareToTwitter(fortune) {
+            const text = encodeURIComponent(`私の運勢は「${fortune}」でした！あなたも占ってみませんか？`);
+            const url = encodeURIComponent(window.location.href);
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+            window.open(twitterUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
